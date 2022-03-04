@@ -1,0 +1,57 @@
+# pull_requestが送信作成された後、testが実行される
+# Usage: pull_requestにtestを行い、testとapproveされた後でしかmergeできないようにする。
+name: Parakeet Utils Test.
+
+on:
+  # 手動Testの設定
+  workflow_dispatch:
+    inputs:
+      # テストするステージ
+      stage:
+        required: false
+        description: "dev or prd"
+        default: "dev"
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+  # 以下のブランチにpull_requestが送られるとtestを実行する
+  pull_request:
+    branches:
+      - main
+      - develop
+    # 指定したファイルの変更だけでは実行しない
+    paths-ignore:
+      - "*.md"
+      - "docs/**"
+      - ".vscode/**"
+jobs:
+  parakeet-e2e-only-test:
+    runs-on: ubuntu-18.04
+
+    defaults:
+      run:
+        working-directory: e2e
+
+    # 上から順に実行される
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.refs }}
+
+      # node環境を整備するためgithub製 actionを使用
+      - name: Setup Node.
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.17.0"
+          cache: "yarn"
+          cache-dependency-path: e2e/yarn.lock
+
+      # node package install
+      - name: Node Package install.
+        run: yarn install
+
+      # testを実行する
+      - name: Jest Test for Utils.
+        run: yarn test:jest

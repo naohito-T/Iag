@@ -1,0 +1,24 @@
+{
+  "default": {
+    "url": "https://fes.nijisanji.jp/",
+    "title": "にじさんじフェス 2022",
+    "og_title": "にじさんじフェス 2022",
+    "format_detection": "",
+    "viewport": "initial-scale=1, width=device-width, minimum-scale=1",
+    "description": "にじさんじ史上最大のイベントを2022年10月1日(土)・2日(日)に幕張メッセで開催！国内ライバーだけではなく、海外ライバーを含む総勢100名以上のにじさんじ所属ライバーが参加。“学園祭”をテーマに、ライブ＆トークを中心としたステージ、ライバープロデュースの企画ブース、フード＆ドリンク、オリジナルグッズ販売など様々な企画が楽しめる体験型フェス！",
+    "og_description": "にじさんじ史上最大のイベントを2022年10月1日(土)・2日(日)に幕張メッセで開催！国内ライバーだけではなく、海外ライバーを含む総勢100名以上のにじさんじ所属ライバーが参加。“学園祭”をテーマに、ライブ＆トークを中心としたステージ、ライバープロデュースの企画ブース、フード＆ドリンク、オリジナルグッズ販売など様々な企画が楽しめる体験型フェス！",
+    "og_sitename": "にじさんじフェス 2022",
+    "og_url": "https://fes.nijisanji.jp/",
+    "og_image": "https://fes.nijisanji.jp/public/ogp/ogp.png",
+    "og_locale": "ja_JP",
+    "twitter_card": "summary_large_image",
+    "twitter_site": "@nijisanji_app",
+    "favicon": "https://www.nijisanji.jp/favicon/apple-touch-icon.png",
+    "apple_icon": "https://www.nijisanji.jp/favicon/apple-touch-icon.png"
+  },
+  "optional": {
+    "theme_color": "",
+    "twitter_description": "",
+    "android_icon": ""
+  }
+}

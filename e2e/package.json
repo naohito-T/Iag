@@ -1,0 +1,58 @@
+{
+  "name": "parakeet-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": ">=14.17.0",
+    "yarn": ">=1.22.10"
+  },
+  "engineStrict": true,
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:show": "playwright show-report",
+    "test:jest": "jest",
+    "lint": "eslint --fix --ext .ts",
+    "prettier": "prettier -w './**/*.ts'",
+    "format": "yarn lint && yarn prettier",
+    "prettier:check": "prettier -c './**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ichikaraInc/parakeet-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ichikaraInc/parakeet-test/issues"
+  },
+  "homepage": "https://github.com/ichikaraInc/parakeet-test#readme",
+  "dependencies": {
+    "@playwright/test": "^1.19.2",
+    "axios": "^0.26.0",
+    "playwright": "^1.19.2"
+  },
+  "devDependencies": {
+    "@types/eslint": "^7.28.0",
+    "@types/eslint-plugin-prettier": "^3.1.0",
+    "@types/jest": "^27.4.1",
+    "@types/prettier": "^2.3.2",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "jest": "^27.5.1",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  }
+}
