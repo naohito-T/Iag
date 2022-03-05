@@ -10,9 +10,11 @@
   "engineStrict": true,
   "private": true,
   "scripts": {
+    "debug": "playwright test --debug",
     "test": "playwright test",
     "test:show": "playwright show-report",
     "test:jest": "jest",
+    "generate": " playwright open https://www.instagram.com/",
     "lint": "eslint --fix --ext .ts",
     "prettier": "prettier -w './**/*.ts'",
     "format": "yarn lint && yarn prettier",
