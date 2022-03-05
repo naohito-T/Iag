@@ -5,9 +5,6 @@ import { Config } from '@/config';
 
 const config = new Config();
 const screenshotPath = config.screenShotPath;
-const localStoragePath = config.localStoragePath;
-const countFile = config.localEvidenceCountFile;
-const urlFile = config.localEvidenceURLFile;
 const txt: string[] = [];
 
 /** 必ず最初に呼ばれる */
@@ -109,89 +106,41 @@ test.describe('Instagram Auto Like', () => {
       );
     }
 
-    /** 書き込み */
-    // if (isMkdir && isURLFile && href)
-    //   await appendFile(`${config.localStoragePath}${config.localEvidenceURLFile}`, [href]);
-
-    // if (isMkdir && isCountFile && href)
-    //   await appendFile(`${config.localStoragePath}${config.localEvidenceCountFile}`, [count]);
-
     /** そのハッシュタグをファイルから読み込み */
     const herfList: string[] = [];
 
-    // いいね
-    // await page
-    //   .locator(
-    //     'xpath=/html/body/div[6]/div[3]/div/article/div/div[1]/div/div[1]/div[2]/div/div/div/ul/li[2]/div/div/div/div[1]/div[2]',
-    //   )
-    //   .dblclick();
-    await page.locator('article[role="presentation"] div[role="presentation"] div[role="button"]').first().click();
-    // つぎの画像
-    await Promise.all([
-      page.waitForNavigation({ url: `${page.url()}`, waitUntil: 'load' }),
-      page.locator('xpath=/html/body/div[6]/div[2]/div/div[2]/button').click(),
-    ]);
-
-    console.log(`page ulr${page.url()}`);
+    /** @TODO いいね済みのはカウントしない */
     const instaLength = 'https://www.instagram.com'.length;
-    herfList.push(page.url().substring(instaLength));
+    const herfPush = async () => {
+      herfList.push(page.url().substring(instaLength));
+    };
 
-    await page
-      .locator(
-        'xpath=/html/body/div[6]/div[3]/div/article/div/div[1]/div/div[1]/div[2]/div/div/div/ul/li[2]/div/div/div/div[1]/div[2]',
-      )
-      .dblclick();
-    // つぎの画像
-    await Promise.all([
-      page.waitForNavigation({ url: `${page.url()}`, waitUntil: 'load' }),
-      page.locator('xpath=/html/body/div[6]/div[2]/div/div[2]/button').click(),
-    ]);
+    /**
+     * @手順
+     * これをダイアログで書く(明日)
+     * 画像をダブルタップ→もーだるが開く
+     * ここをfor await
+     * その画像をダブルタップ→いいね(とURLを保存しておく)
+     * 次をクリック
+     * その画像をダブルタップ→いいね(とURLを保存しておく)
+     * 次をクリック
+     * ...以降繰り返し
+     */
+    // for (let i = 0; i < config.instaLikeLimitCount; i++) {
+    for (let i = 0; i < 10; i++) {
+      Promise.all([
+        await page
+          .locator('article[role="presentation"] div[role="presentation"] div[role="button"]')
+          .first()
+          .dblclick(),
+        await page.locator('.l8mY4 .wpO6b').click(),
+        await herfPush(),
+      ]);
+      await page.waitForTimeout(2000);
+      // if (i < config.instaLikeLimitCount) {
+      if (i < 10) {
+        await appendFile(`${config.localStoragePath}${config.localEvidenceURLFile}`, herfList);
+      }
+    }
   });
-
-  /**
-   * @手順
-   * これをダイアログで書く(明日)
-   * 画像をダブルタップ→もーだるが開く
-   * ここをfor await
-   * その画像をダブルタップ→いいね(とURLを保存しておく)
-   * 次をクリック
-   * その画像をダブルタップ→いいね(とURLを保存しておく)
-   * 次をクリック
-   * ...以降繰り返し
-   */
 });
-
-// test.describe('Next Page to Hash.', () => {
-//   /** login後 */
-//   test('Go to New Page Test.', async ({ page }) => {
-//     config.setHashURL = '今日のコーディネート';
-
-//     await page.screenshot({ path: `${screenshotPath}/hash_page.png`, fullPage: true });
-//     await Promise.all([
-//       page.waitForNavigation({ url: config.instaHashURL, waitUntil: 'load' }),
-//       page.goto(config.instaHashURL),
-//     ]);
-//     await page.screenshot({ path: `${screenshotPath}/hash_page2.png`, fullPage: true });
-//     await expect(page).toHaveURL(config.instaHashURL);
-//   });
-// });
-
-// test.describe('Next Page to Hash.', () => {
-//   /** login後 */
-//   /** @desc test.describe内で一回呼ばれる */
-//   test.beforeEach(async ({ page }) => {
-//     await page.goto(config.instaURL);
-//   });
-//   test('Go to New Page Test.', async ({ page }) => {
-// config.setHashURL = '今日のコーディネート';
-
-// page.screenshot({ path: `${screenshotPath}/hash_page.png`, fullPage: true });
-// await Promise.all([
-//   page.waitForNavigation({ url: config.instaHashURL, waitUntil: 'load' }),
-//   page.goto(config.instaHashURL),
-// ]);
-//     page.screenshot({ path: `${screenshotPath}/hash_page2.png`, fullPage: true });
-
-//     expect(page).toHaveURL(config.instaHashURL);
-//   });
-// });

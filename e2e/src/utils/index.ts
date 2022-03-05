@@ -33,7 +33,7 @@ export const mkdir = async (path: string): Promise<boolean> => {
 /** @desc ファイル作成で書き込む */
 export const touchFile = async (path: string, data: string): Promise<boolean> => {
   return fs
-    .writeFile(path, data)
+    .writeFile(path, `${data}\n`)
     .then((_) => true)
     .catch((_) => false);
 };
@@ -45,7 +45,7 @@ export const readFile = async (path: string): Promise<string | boolean> => {
 
 /** @desc ファイルに追記(使用用途はURLぐらい配列で格納する) */
 export const appendFile = async (path: string, data: string[]): Promise<boolean> => {
-  const texts = data.join('<br/>').slice(0, 999); // 最大1000文字とのこと
+  const texts = data.join('\n');
   return fs
     .appendFile(path, texts, 'utf-8')
     .then((_) => true)
