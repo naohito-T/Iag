@@ -22,16 +22,32 @@ export const checkColorCode = (color: string | null): boolean => {
 };
 
 /** @desc ディレクトリを作成 */
-export const mkdir = async (path: string) => {
-  await fs.mkdir(path);
+export const mkdir = async (path: string): Promise<boolean> => {
+  const isDir = await fs
+    .mkdir(path)
+    .then((_) => true)
+    .catch((_) => false);
+  return isDir;
 };
 
-/** @desc ファイル作成 */
-// 一度読みこんで、行数が
-export const touchFile = async (path: string, data: string) => {
-  await fs.writeFile(path, data);
+/** @desc ファイル作成で書き込む */
+export const touchFile = async (path: string, data: string): Promise<boolean> => {
+  return fs
+    .writeFile(path, data)
+    .then((_) => true)
+    .catch((_) => false);
 };
 
-export const readFile = async (path: string) => {
-  await fs.readFile(path);
+/** @desc ファイル新規作成 */
+export const readFile = async (path: string): Promise<string | boolean> => {
+  return fs.readFile(path, 'utf-8').catch((_) => false);
+};
+
+/** @desc ファイルに追記(使用用途はURLぐらい配列で格納する) */
+export const appendFile = async (path: string, data: string[]): Promise<boolean> => {
+  const texts = data.join('<br/>').slice(0, 999); // 最大1000文字とのこと
+  return fs
+    .appendFile(path, texts, 'utf-8')
+    .then((_) => true)
+    .catch((_) => false);
 };
