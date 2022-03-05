@@ -7,7 +7,7 @@ export class Config {
 
   private INSTA_PASS = process.env.INSTA_PASS ?? '';
 
-  private INSTA_URL = 'https://www.instagram.com/';
+  private INSTA_URL = 'https://www.instagram.com';
 
   private INSTA_HASH_URL = 'https://www.instagram.com/explore/tags/';
 
