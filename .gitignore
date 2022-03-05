@@ -11,3 +11,6 @@ env/decrypt
 node_modules/
 test-results/
 playwright-report/
+
+# png
+*.png
