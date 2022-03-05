@@ -1,21 +1,9 @@
 # Introduction
 
-LP に対し、E2E テストを行うツール
-主なチェック項目はスプレッドシート
-
-[チェック項目(スプレッドシート)](https://docs.google.com/spreadsheets/d/1E9Vxp5C5DU_TXk0Ku9Ht23pPXk75DHwsibhU2BFL6As/edit#gid=0)
+Instagram の auto いいねツール
 
 やりたいこと
 system 構成図をかく
-
-## 検証
-
-https://fes.nijisanji.jp/
-
-## env
-
-ESLint 静的検証
-Prettier フォーマット
 
 ## Setup
 
@@ -34,7 +22,7 @@ $ direnv allow
 $ cd ./createSmartFormat; yarn install
 ```
 
-## How To
+## Start up
 
 | 項目           | 概要                                                                      | 補足                      |
 | -------------- | ------------------------------------------------------------------------- | ------------------------- |
@@ -60,5 +48,5 @@ $ cd ./createSmartFormat; yarn install
 ## Code generate
 
 playwright で対象サイトを開く
-`$ npx playwright open https://fes.nijisanji.jp/`
+`$ npx playwright open https://www.instagram.com/`
 あとはクリックするだけ

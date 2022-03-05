@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { excludeSpace, sortTexts } from '@/utils';
 import { api } from '@/lib';
-import mockJson from '@/__mocks__/mock.json';
 
 const txt: string[] = [];
 

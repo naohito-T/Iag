@@ -1,3 +1,3 @@
 export interface IRequestServiceAPI {
-  postTeams(texts: string[]): Promise<void>;
+  postLine(texts: string[]): Promise<void>;
 }
