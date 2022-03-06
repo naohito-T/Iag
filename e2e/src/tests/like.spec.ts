@@ -33,7 +33,7 @@ test.describe('Instagram Auto Like', () => {
     }
   });
 
-  test('Login Test.', async ({ page }) => {
+  test('Auto Like Test.', async ({ page }) => {
     await page.locator('input[name=username]').click();
     await page.locator('input[name=username]').fill(config.instaId);
     await page.locator('input[name=password]').click();
@@ -41,29 +41,28 @@ test.describe('Instagram Auto Like', () => {
 
     /** @desc Key Chairnに保存するか */
     await Promise.all([
-      page.waitForNavigation({ url: 'https://www.instagram.com/accounts/onetap/?next=%2F', waitUntil: 'load' }),
+      page.waitForNavigation({ url: config.instaModalUrl, waitUntil: 'load' }),
       page.locator('button[type=submit]').first().click(),
     ]);
-    await expect(page).toHaveURL('https://www.instagram.com/accounts/onetap/?next=%2F');
-    await page.screenshot({ path: `${screenshotPath}/login.png` });
+    await expect(page).toHaveURL(config.instaModalUrl);
+    // await page.screenshot({ path: `${screenshotPath}/login.png` });
 
     /** @desc Home Pageにくる(実際にはlogin情報保存するかポップアップが表示されている) */
     await Promise.all([
-      page.waitForNavigation({ url: 'https://www.instagram.com/', waitUntil: 'load' }),
+      page.waitForNavigation({ url: config.instaURL, waitUntil: 'load' }),
       page.locator('text=Not Now').click(),
     ]);
-    await expect(page).toHaveURL('https://www.instagram.com/');
+    await expect(page).toHaveURL(config.instaURL);
     await page.screenshot({ path: `${screenshotPath}/logined.png`, fullPage: true });
     txt.push('Login完了');
 
     /** Promise.allのなかでawaitをつかえば順に処理がされる */
     /** @desc ハッシュpageにいく */
     await Promise.all([
-      page.waitForNavigation({ url: config.instaHashURL, waitUntil: 'load' }),
-      page.goto(config.instaHashURL),
+      page.waitForNavigation({ url: config.instaHashFirstURL, waitUntil: 'load' }),
+      page.goto(config.instaHashFirstURL ?? config.instaDefaultHashURL),
     ]);
-    await expect(page).toHaveURL(config.instaHashURL);
-    await page.screenshot({ path: `${screenshotPath}/hash_page.png`, fullPage: true });
+    await expect(page).toHaveURL(config.instaHashFirstURL ?? config.instaDefaultHashURL);
     txt.push('Hash pageへ遷移が完了');
 
     // これが1 set
@@ -80,40 +79,25 @@ test.describe('Instagram Auto Like', () => {
         .click(),
     ]);
     await expect(page).toHaveURL(`${config.instaURL}${href}`);
-    await page.screenshot({ path: `${screenshotPath}/hash_desc_page.png`, fullPage: true });
     txt.push('Hash 詳細pageへ遷移が完了');
 
     /** @desc ディレクトリを作成する。あればtrue */
-    const isMkdir = await mkdir(config.localStoragePath);
+    await mkdir(config.localStoragePath);
     /** @desc ファイルを読み込む。なければfalse */
     const isURLFile = await readFile(`${config.localStoragePath}${config.localEvidenceURLFile}`);
     const isCountFile = await readFile(`${config.localStoragePath}${config.localEvidenceCountFile}`);
-    console.log(`isMkdir: ${isMkdir}`);
-    console.log(`isURLFile: ${isURLFile}`);
-    console.log(`isCountFile: ${isCountFile}`);
 
     /** ディレクトリがあり、fileがなければURL指定して書き込む(新規作成 URLFile) */
     if (!isURLFile && href) {
-      console.log('新規書き込み');
       await touchFile(`${config.localStoragePath}${config.localEvidenceURLFile}`, href);
     }
     /** ディレクトリがあり、fileがなければcount数を指定して書き込む(新規作成 CountFile) */
     if (!isCountFile) {
-      console.log('新規書き込みCount');
       await touchFile(
         `${config.localStoragePath}${config.localEvidenceCountFile}`,
         config.instaLikeLimitCount.toString(),
       );
     }
-
-    /** そのハッシュタグをファイルから読み込み */
-    const herfList: string[] = [];
-
-    /** @TODO いいね済みのはカウントしない */
-    const instaLength = 'https://www.instagram.com'.length;
-    const herfPush = async () => {
-      herfList.push(page.url().substring(instaLength));
-    };
 
     /**
      * @手順
@@ -125,21 +109,40 @@ test.describe('Instagram Auto Like', () => {
      * その画像をダブルタップ→いいね(とURLを保存しておく)
      * 次をクリック
      * ...以降繰り返し
+     * ※いいね済みのはカウントしない予定だったが、特に再度いいねしても問題がないため分岐はしない
      */
+
+    /** @desc そのハッシュタグをファイルから読み込み */
+    const herfList: string[] = [];
+
+    const instaLength = 'https://www.instagram.com'.length;
+    const herfPush = async () => {
+      herfList.push(page.url().substring(instaLength));
+    };
     // for (let i = 0; i < config.instaLikeLimitCount; i++) {
-    for (let i = 0; i < 10; i++) {
-      Promise.all([
-        await page
-          .locator('article[role="presentation"] div[role="presentation"] div[role="button"]')
-          .first()
-          .dblclick(),
-        await page.locator('.l8mY4 .wpO6b').click(),
-        await herfPush(),
-      ]);
-      await page.waitForTimeout(2000);
-      // if (i < config.instaLikeLimitCount) {
-      if (i < 10) {
-        await appendFile(`${config.localStoragePath}${config.localEvidenceURLFile}`, herfList);
+    for await (const hash of config.instaHashListURL) {
+      for (let i = 0; i < 10; i++) {
+        // 投稿詳細に何枚も画像がある場合は構造体が変わるため、checkする
+        const isNextImage = await page
+          // .locator('xpath=/html/body/div[6]/div[3]/div/article/div/div[1]/div/div[1]/div[2]/div/button[2]')
+          .locator('article[role="presentation"] [aria-label="次へ"]')
+          .isEnabled();
+        Promise.all([
+          isNextImage
+            ? await page
+                .locator('article[role="presentation"] div[role="presentation"] div[role="button"]')
+                .first()
+                .dblclick()
+            : await page.locator('.eLAPa.vF75o').dblclick(),
+          await page.locator('.l8mY4 .wpO6b').click(),
+          await herfPush(),
+        ]);
+        await page.waitForTimeout(2000);
+        // if (i < config.instaLikeLimitCount) {
+        if (i < 10) {
+          console.log(`${hash}のいいねが終了`);
+          await appendFile(`${config.localStoragePath}${config.localEvidenceURLFile}`, herfList);
+        }
       }
     }
   });

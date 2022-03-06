@@ -9,9 +9,13 @@ export class Config {
 
   private INSTA_URL = 'https://www.instagram.com';
 
-  private INSTA_HASH_URL = 'https://www.instagram.com/explore/tags/';
+  private INSTA_HASH_URL: string[] = [];
+
+  private INSTA_DEFAULT_HASH_URL = 'https://www.instagram.com/explore/tags/今日のコーディネート/?hl=ja';
 
   private INSTA_LIKE_LIMIT_COUNT = 100;
+
+  private INSTA_MODAL_URL = 'https://www.instagram.com/accounts/onetap/?next=%2F';
 
   private LINE_TOKEN = process.env.LINE_TOKEN ?? '';
 
@@ -26,7 +30,7 @@ export class Config {
   private LOCAL_EVIDENCE_URL_FILE = '/like_url.txt';
 
   set setHashURL(hash: string) {
-    this.INSTA_HASH_URL = `${this.INSTA_HASH_URL}${hash}/?hl=ja`;
+    this.INSTA_HASH_URL.push(`https://www.instagram.com/explore/tags/${hash}/?hl=ja`);
   }
 
   get instaId(): string {
@@ -37,7 +41,18 @@ export class Config {
     return this.INSTA_URL;
   }
 
-  get instaHashURL(): string {
+  /** defaultのhash urlを返す */
+  get instaDefaultHashURL(): string {
+    return this.INSTA_DEFAULT_HASH_URL;
+  }
+
+  /** HashURLから先頭の一つ返す */
+  get instaHashFirstURL(): string | undefined {
+    return this.INSTA_HASH_URL.shift();
+  }
+
+  /** HashURL Listを返す */
+  get instaHashListURL(): string[] {
     return this.INSTA_HASH_URL;
   }
 
@@ -47,6 +62,10 @@ export class Config {
 
   get instaLikeLimitCount(): number {
     return this.INSTA_LIKE_LIMIT_COUNT;
+  }
+
+  get instaModalUrl(): string {
+    return this.INSTA_MODAL_URL;
   }
 
   get lineToken(): string {
